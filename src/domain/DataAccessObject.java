@@ -21,23 +21,21 @@ public class DataAccessObject {
 	}
 
 	public String getAll() {
-		String html = "<th>Ime</th><th>Prezime</th><th>Username</th><th>Password</th>";
+		String html = "<th>Ime</th><th>Prezime</th>";
 		for (User u : usersList) {
 			html += "<tr>";
-			html += "<td>" + u.getIme() + "</td>" + "<td>" + u.getPrezime() + "</td>" + "<td>" + u.getUsername()
-					+ "</td>" + "<td>" + u.getPassword() + "</td>";
+			html += "<td>" + u.getIme() + "</td>" + "<td>" + u.getPrezime() + "</td>" ;
 			html += "</tr>";
 		}
 		return html;
 	}
 
 	public String getAllLogged() {
-		String html = "<th>Ime</th><th>Prezime</th><th>Username</th><th>Password</th>";
+		String html = "<th>Ime</th><th>Prezime</th>";
 		for (User p : loggedUsers) {
 			if (p != null) {
 				html += "<tr>";
-				html += "<td>" + p.getIme() + "</td>" + "<td>" + p.getPrezime() + "</td>" + "<td>" + p.getUsername()
-						+ "</td>" + "<td>" + p.getPassword() + "</td>";
+				html += "<td>" + p.getIme() + "</td>" + "<td>" + p.getPrezime() + "</td>";
 				html += "</tr>";
 			}
 		}
