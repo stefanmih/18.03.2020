@@ -6,63 +6,66 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class DataAccessObject {
-	List<User> list;
+	public List<User> usersList = new ArrayList<User>();
 	private static DataAccessObject instance = null;
-	public static Map<String, String> users = new TreeMap<String, String>();
-	public static Map<String, String> loggedUsers = new TreeMap<String, String>();
+	public List<User> loggedUsers = new ArrayList<User>();
 
 	private DataAccessObject() {
 		super();
-		list = new ArrayList<User>();
-		list.add(new User("ime1", "prezime1", "user1", "pw1"));
-		list.add(new User("ime2", "prezime2", "user2", "pw2"));
-		users.put("admin", "admin");
-		users.put("user1", "user1");
+		usersList.add(new User("ime1", "prezime1", "admin", "admin"));
+		usersList.add(new User("ime2", "prezime2", "user1", "user1"));
 	}
 
 	public void add(User p) {
-		list.add(p);
+		usersList.add(p);
 	}
 
 	public String getAll() {
-		String html = "<th>Ime</th><th>Prezime</th>";
-		for (User p : list) {
+		String html = "<th>Ime</th><th>Prezime</th><th>Username</th><th>Password</th>";
+		for (User u : usersList) {
 			html += "<tr>";
-			html += "<td>" + p.getIme() + "</td>" + "<td>" + p.getPrezime() + "</td>";
+			html += "<td>" + u.getIme() + "</td>" + "<td>" + u.getPrezime() + "</td>" + "<td>" + u.getUsername()
+					+ "</td>" + "<td>" + u.getPassword() + "</td>";
 			html += "</tr>";
 		}
 		return html;
 	}
-	
+
 	public String getAllLogged() {
-		String html = "<th>Username</th><th>Password</th>";
-		for (Map.Entry<String, String> entry : loggedUsers.entrySet()) {
-			html += "<tr>";
-			html += "<td>" + entry.getKey() + "</td>" + "<td>" + entry.getValue() + "</td>";
-			html += "</tr>";
+		String html = "<th>Ime</th><th>Prezime</th><th>Username</th><th>Password</th>";
+		for (User p : loggedUsers) {
+			if (p != null) {
+				html += "<tr>";
+				html += "<td>" + p.getIme() + "</td>" + "<td>" + p.getPrezime() + "</td>" + "<td>" + p.getUsername()
+						+ "</td>" + "<td>" + p.getPassword() + "</td>";
+				html += "</tr>";
+			}
 		}
 		return html;
 	}
 
 	public boolean delete(String ime) {
 		User found = null;
-		for (User p : list) {
+		for (User p : usersList) {
 			if (p.getIme().equals(ime))
 				found = p;
 		}
 		if (found == null) {
 			return false;
 		} else {
-			list.remove(found);
+			usersList.remove(found);
 			return true;
 		}
 	}
 
-	public User find(String ime) {
+	public User findLogged(String ime) {
+		if (ime == null)
+			return null;
 		User found = null;
-		for (User p : list) {
-			if (p.getIme().equals(ime))
-				found = p;
+		for (User p : loggedUsers) {
+			if (p.getUsername() != null)
+				if (p.getUsername().equals(ime))
+					found = p;
 		}
 		if (found == null) {
 			return null;
@@ -78,33 +81,34 @@ public class DataAccessObject {
 		return instance;
 	}
 
-	public static boolean findUser(String username, String password) {
-		System.out.println(users.toString());
+	public boolean findUser(String username, String password) {
 		if (username != null && password != null) {
-			if (users.containsKey(username)) {
-				System.out.println("Ima");
-				if (users.get(username).equals(password))
+			for (User z : usersList) {
+				if (z.getUsername().equals(username) && z.getPassword().equals(password)) {
 					return true;
-				else
-					return false;
+				}
+
 			}
-
-			else
-				return false;
-		} else
-			return false;
+		}
+		return false;
 	}
 
-	public static boolean isLogged(String parameter) {
-		if (parameter != null)
-			return loggedUsers.containsKey(parameter);
-		else
-			return false;
+	public boolean isLogged(String parameter) {
+		return (findLogged(parameter) != null);
 	}
 
-	public static void addLoggedUser(String parameter, String parameter2) {
-		loggedUsers.put(parameter, parameter2);
+	public void addLoggedUser(String parameter) {
+		User u = usersList.get(usersList.indexOf(this.find(parameter)));
+		loggedUsers.add(u);
 
+	}
+
+	private User find(String parameter) {
+		for (User u : usersList) {
+			if (u.getUsername().equals(parameter))
+				return u;
+		}
+		return null;
 	}
 
 }

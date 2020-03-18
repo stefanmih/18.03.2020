@@ -8,19 +8,24 @@ import domain.User;
 import servlet.FrontController;
 
 public class LoginAction extends AbstractAction {
-	public String user="";
+	public String user = "";
+
 	@Override
 	public String execute(HttpServletRequest request) {
-		user=request.getParameter("username");
-		if (DataAccessObject.findUser(request.getParameter("username"), request.getParameter("password"))) {
-			if (DataAccessObject.isLogged(request.getParameter("username"))) {
+		user = request.getParameter("username");
+		if (DataAccessObject.getInstance().findUser(request.getParameter("username"),
+				request.getParameter("password"))) {
+			if (DataAccessObject.getInstance().isLogged(request.getParameter("username"))) {
 				DataAccessObject.getInstance().add(ActionAdd.p);
 				return "/index.jsp";
 			}
 			request.setAttribute("user", "Logged in as: " + request.getParameter("username"));
 			request.setAttribute("username", request.getAttribute("username"));
-			DataAccessObject.getInstance().add(ActionAdd.p);
-			DataAccessObject.addLoggedUser(request.getParameter("username"), request.getParameter("password"));
+			if (ActionAdd.p != null) {
+				DataAccessObject.getInstance().add(ActionAdd.p);
+				ActionAdd.p = null;
+			}
+			DataAccessObject.getInstance().addLoggedUser(request.getParameter("username"));
 			request.getSession().setAttribute("username", user);
 			return "/index.jsp";
 		} else {

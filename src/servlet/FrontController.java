@@ -28,7 +28,6 @@ public class FrontController extends HttpServlet {
 			throws ServletException, IOException {
 		
 		DataAccessObject.getInstance();
-		System.out.println(DataAccessObject.loggedUsers);
 		System.out.println(request.getPathInfo());
 		request.getRequestDispatcher(applicationController.processRequest(request.getPathInfo(), request)).forward(request, response);
 	}
